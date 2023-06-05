@@ -1,0 +1,17 @@
+{% extends 'Driver/base.html' %}
+{% block content %}
+    <div class="row align-items-center justify-content-center">
+        <form action='' method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">帳號</label>
+                <input type="text" class="form-control-sm" id="username" name="username">
+            </div>
+            <div class="form-group">
+                <label for="password">密碼</label>
+                <input type="text" class="form-control-sm" id="password" name="password"><br>
+                <input type="submit" class="mb-2 btn btn-primary" value="登入">
+            </div>
+        </form>
+    </div>
+{% endblock %}

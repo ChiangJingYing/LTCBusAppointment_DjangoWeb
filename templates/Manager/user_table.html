@@ -1,0 +1,7 @@
+{% extends 'Manager/base.html' %}
+{% load django_tables2 %}
+{% block content %}
+    <div class="row align-items-start justify-content-start">
+        {% render_table table %}
+    </div>
+{% endblock %}

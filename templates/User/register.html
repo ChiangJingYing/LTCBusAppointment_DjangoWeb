@@ -1,0 +1,26 @@
+{% extends "User/base.html" %}
+{% block content %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            {% for field in form %}
+                <div class="form-group col-md-6">
+                    {{ field.label }}
+                    {{ field }}
+                    {% if field.errors %}
+                        <ul>
+                            {% for error in field.errors %}
+                                <li>
+                                    <p style="color: red">{{ error }}</p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <div class="form-group col-md-6">
+                <input type="submit" value="送出">
+            </div>
+        </div>
+    </form>
+{% endblock %}
