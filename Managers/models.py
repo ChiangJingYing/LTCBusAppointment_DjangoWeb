@@ -120,17 +120,7 @@ class User(models.Model):
         blank=True,
         null=True
     )  # Field name made lowercase.
-    should_pay = models.IntegerField(
-        db_column='Should_Pay',
-        max_length=99999,
-        null=True
-    )
-    mileage = models.DecimalField(
-        db_column='Mileage',
-        decimal_places=2,
-        max_digits=2,
-        null=True
-    )
+
 
     class Meta:
         managed = False
