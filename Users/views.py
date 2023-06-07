@@ -1,17 +1,19 @@
-from django.contrib.auth import authenticate
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from .form import UserRegisterForm, UserEditForm
-from .table import Appointment as AppointmentTable
-from .models import User, Appointment
 from django_tables2 import SingleTableView
+
+from .form import UserRegisterForm, UserEditForm
+from .models import User, Appointment
+from .table import Appointment as AppointmentTable
 
 
 # Create your views here.
 
 class Index(View):
     def get(self, request):
+        if 'user' in request.session:
+            return render(request, 'User/base.html', {'logined': True})
         return render(request, 'User/index.html')
 
     def post(self, request):
@@ -24,14 +26,17 @@ class Index(View):
                 if user.password == password:
                     pass
                 else:
-                    return render(request, 'User/index.html')
+                    error_message = '帳號密碼錯誤'
+                    return render(request, 'User/index.html', locals())
             except User.DoesNotExist:
-                return render(request, 'User/index.html')
+                error_message = '帳號密碼錯誤'
+                return render(request, 'User/index.html', locals())
             if user is not None:
                 request.session['user'] = user.username
-                return HttpResponse(f'login success{request.session["user"]}')
+                return render(request, 'User/base.html', {'logined': True})
         else:
-            return render(request, 'User/index.html')
+            error_message = '帳號密碼錯誤'
+            return render(request, 'User/index.html', locals())
 
 
 class Logout(View):
@@ -57,6 +62,7 @@ class Register(View):
 class EditInfo(View):
     def get(self, request):
         if 'user' in request.session:
+            logined = True
             username = request.session['user']
             info = User.objects.raw("Select * from User Where Username=%s", [username])
             form = UserEditForm(instance=info[0])
@@ -87,8 +93,10 @@ class AppointmentTableView(SingleTableView):
 
     def get(self, request, *args, **kwargs):
         if 'user' in request.session:
+            tmp = {'logined': True}
+
             self.object_list = self.get_queryset(user=request.session['user'])
-            context = self.get_context_data()
+            context = self.get_context_data(**tmp)
             return self.render_to_response(context)
         else:
             return redirect('/user')

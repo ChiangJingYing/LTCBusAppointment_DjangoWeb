@@ -11,6 +11,8 @@ from .form import DriverEditForm, DriverRegisterForm
 
 class Index(View):
     def get(self, request):
+        if 'manager' in request.session:
+            return render(request, 'Manager/base.html', {'logined': True})
         return render(request, 'Manager/index.html')
 
     def post(self, request):
@@ -23,15 +25,18 @@ class Index(View):
                 if user.password == password:
                     print('mgr')
                 else:
-                    return render(request, 'Manager/index.html')
+                    error_message = '帳號密碼錯誤'
+                    return render(request, 'Manager/index.html', locals())
             except Managers.DoesNotExist:
-                return render(request, 'Manager/index.html')
+                error_message = '帳號密碼錯誤'
+                return render(request, 'Manager/index.html', locals())
             if user is not None:
                 # login(request, user)
                 request.session['manager'] = user.manager_id
-                return HttpResponse(f'login success{request.session["manager"]}')
+                return redirect('home')
         else:
-            return render(request, 'Manager/index.html')
+            error_message = '帳號密碼錯誤'
+            return render(request, 'Manager/index.html', locals())
 
 
 class Logout(View):
@@ -53,7 +58,8 @@ class UserAdminTableView(SingleTableView):
             return redirect('/manager')
         else:
             self.object_list = self.get_queryset()
-            context = self.get_context_data()
+            addition_data = {'logined': True}
+            context = self.get_context_data(**addition_data)
             return self.render_to_response(context)
 
 
@@ -74,7 +80,8 @@ class DriverAdminTableView(SingleTableView):
             return redirect('/manager')
         else:
             self.object_list = self.get_queryset()
-            context = self.get_context_data()
+            addition_data = {'logined': True}
+            context = self.get_context_data(**addition_data)
             return self.render_to_response(context)
 
 
@@ -82,6 +89,7 @@ class editDriver(View):
 
     def get(self, request, driver_id):
         if 'manager' in request.session:
+            logined = True
             info = Driver.objects.raw("Select * from Driver Where Driver_ID = %s", [driver_id])
             form = DriverEditForm(instance=info[0])
             return render(request, 'Manager/edit_driver.html', locals())
@@ -98,9 +106,11 @@ class editDriver(View):
         form.save()
         return render(request, 'Manager/edit_driver.html', locals())
 
+
 class registerDriver(View):
     def get(self, request):
         if 'manager' in request.session:
+            logined = True
             init_data = {"manger": Managers.objects.filter(manager_id=request.session['manager'])[0]}
             form = DriverRegisterForm(initial=init_data)
             return render(request, 'Manager/registerDriver.html', locals())
@@ -114,3 +124,11 @@ class registerDriver(View):
             return redirect('/manager/mgdriver')
         else:
             return render(request, 'Manager/registerDriver.html', locals())
+
+
+class HomePage(View):
+    def get(self, request):
+        if 'manager' in request.session:
+            return render(request, 'Manager/home.html', {'logined': True})
+        else:
+            return redirect('/manager')

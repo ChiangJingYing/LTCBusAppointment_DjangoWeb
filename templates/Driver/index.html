@@ -1,6 +1,11 @@
 {% extends 'Driver/base.html' %}
 {% block content %}
     <div class="row align-items-center justify-content-center">
+        {% if error_message %}
+            <p style="color:red">{{ error_message }}</p>
+        {% endif %}
+    </div>
+    <div class="row align-items-center justify-content-center">
         <form action='' method="post">
             {% csrf_token %}
             <div class="form-group">

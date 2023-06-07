@@ -6,7 +6,7 @@
     <title>Manager</title>
 </head>
 <body>
-    <nav class="navbar navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <span class="navbar-brand">管理</span>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -14,20 +14,17 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">首頁<span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href={% url 'mguser' %}>管理使用者 <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href={% url 'mgdriver' %}>管理司機 <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-btn">
-                    <a href={% url 'logoutmgr' %}>
-                        <button class="btn btn-danger">登出</button>
-                    </a>
-                </li>
             </ul>
+            {% if logined %}
+                <a href={% url 'logoutmgr' %}>
+                    <button class="btn btn-danger">登出</button>
+                </a>
+            {% endif %}
         </div>
     </nav>
     <div class="container p-3">

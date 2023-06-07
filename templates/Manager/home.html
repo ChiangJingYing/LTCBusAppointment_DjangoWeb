@@ -1,0 +1,18 @@
+{% extends 'Manager/base.html' %}
+{% block content %}
+    <div class="row align-items-start justify-content-start">
+        <div class="col">
+            <a href={% url 'mguser' %} class="btn btn-primary">管理使用者</a>
+        </div>
+        <div class="col">
+            <a href={% url 'mgdriver' %} class="btn btn-primary">
+                管理司機
+            </a>
+        </div>
+        <div class="col">
+            <a href="" class="btn btn-primary">
+                管理預約
+            </a>
+        </div>
+    </div>
+{% endblock %}

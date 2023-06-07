@@ -6,7 +6,7 @@
     <title>Manager</title>
 </head>
 <body>
-    <nav class="navbar navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <span class="navbar-brand">司機</span>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -19,12 +19,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href={% url 'schedule_table' %}>查看班表<span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-btn">
-                    <a href={% url 'logoutdr' %}>
-                        <button class="btn btn-danger">登出</button>
-                    </a>
-                </li>
             </ul>
+            {% if logined %}
+                <a href={% url 'logoutdr' %}>
+                    <button class="btn btn-danger">登出</button>
+                </a>
+            {% endif %}
         </div>
     </nav>
     <div class="container p-3">

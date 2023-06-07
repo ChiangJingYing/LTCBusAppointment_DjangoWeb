@@ -1,17 +1,18 @@
-from django.contrib.auth import authenticate
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import View
 from django_tables2 import SingleTableView
+
+from .form import ReportForm as ReForm
 from .models import Schedule, Report, Route, Driver
 from .table import ScheduleTable as ST, RouteTable
-from .form import ReportForm as ReForm
 
 
 # Create your views here.
 
 class Index(View):
     def get(self, request):
+        if 'driver' in request.session:
+            return render(request, 'Driver/base.html', {'logined': True})
         return render(request, 'Driver/index.html')
 
     def post(self, request):
@@ -24,15 +25,18 @@ class Index(View):
                 if user.password == password:
                     pass
                 else:
-                    return render(request, 'Driver/index.html')
+                    error_message = '帳號密碼錯誤'
+                    return render(request, 'Driver/index.html', locals())
             except Driver.DoesNotExist:
-                return render(request, 'Driver/index.html')
+                error_message = '帳號密碼錯誤'
+                return render(request, 'Driver/index.html', locals())
             if user is not None:
                 # login(request, user)
                 request.session['driver'] = user.driver_id
                 return redirect('schedule_table')
         else:
-            return render(request, 'Driver/index.html')
+            error_message = '帳號密碼錯誤'
+            return render(request, 'Driver/index.html', locals())
 
 
 
@@ -56,7 +60,10 @@ class ScheduleTable(SingleTableView):
     def get(self, request, *args, **kwargs):
         if 'driver' in request.session:
             self.object_list = self.get_queryset(user=request.session['driver'])
-            context = self.get_context_data()
+            addition_data = {
+                'logined': True
+            }
+            context = self.get_context_data(**addition_data)
             return self.render_to_response(context)
         else:
             return redirect('/driver')
@@ -64,14 +71,18 @@ class ScheduleTable(SingleTableView):
 
 class ReportForm(View):
     def get(self, request, schedule_id):
-        init_data = {'schedule': Schedule.objects.filter(id=schedule_id)[0].id}
-        old_data = Report.objects.raw("Select * from Report Where Schedule = %s", [schedule_id])
-        if old_data:
-            form = ReForm(instance=old_data[0])
+        if 'driver' in request.session:
+            logined = True
+            init_data = {'schedule': Schedule.objects.filter(id=schedule_id)[0].id}
+            old_data = Report.objects.raw("Select * from Report Where Schedule = %s", [schedule_id])
+            if old_data:
+                form = ReForm(instance=old_data[0])
+            else:
+                form = ReForm(initial=init_data)
+            form.fields.items()
+            return render(request, 'Driver/report_form.html', locals())
         else:
-            form = ReForm(initial=init_data)
-        form.fields.items()
-        return render(request, 'Driver/report_form.html', locals())
+            return redirect('driver')
 
     def post(self, request, schedule_id):
         form = ReForm(request.POST)
@@ -97,7 +108,10 @@ class RouteTableView(SingleTableView):
     def get(self, request, schedule_id, *args, **kwargs):
         if 'driver' in request.session:
             self.object_list = self.get_queryset(schedule_id=schedule_id)
-            context = self.get_context_data()
+            addition_data = {
+                'logined': True
+            }
+            context = self.get_context_data(**addition_data)
             return self.render_to_response(context)
         else:
             return redirect('/driver')
