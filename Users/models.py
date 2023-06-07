@@ -113,7 +113,17 @@ class Appointment(models.Model):
     schedules = models.ForeignKey('Schedule', models.DO_NOTHING, db_column='Schedules_ID', blank=True, null=True)  # Field name made lowercase.
     remarks = models.CharField(db_column='Remarks', max_length=50, db_collation='utf8mb3_general_ci', blank=True, null=True)  # Field name made lowercase.
     manager = models.ForeignKey('Managers', models.DO_NOTHING, db_column='Manager_ID')  # Field name made lowercase.
-
+    should_pay = models.IntegerField(
+        db_column='Should_Pay',
+        max_length=99999,
+        null=True
+    )
+    mileage = models.DecimalField(
+        db_column='Mileage',
+        decimal_places=2,
+        max_digits=2,
+        null=True
+    )
     class Meta:
         managed = False
         db_table = 'Appointment'
