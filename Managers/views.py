@@ -132,3 +132,23 @@ class HomePage(View):
             return render(request, 'Manager/home.html', {'logined': True})
         else:
             return redirect('/manager')
+
+class StatisticsTableView(SingleTableView):
+    table_class = StaticTable
+    template_name = 'Manager/statistics_table.html'
+
+    def get_queryset(self, **kwargs):
+        return User.objects.raw(
+            'SELECT User_ID, User.Username, COUNT(Appointment.Appointment_ID) AS appointment_times\
+             FROM User LEFT JOIN Appointment ON User.User_ID = Appointment.Appointment_User\
+             GROUP BY User.User_ID, User.username;'
+        )
+
+    def get(self, request, *args, **kwargs):
+        if 'manager' not in request.session or request.session['manager'] == '':
+            return redirect('/manager')
+        else:
+            self.object_list = self.get_queryset()
+            addition_data = {'logined': True}
+            context = self.get_context_data(**addition_data)
+            return self.render_to_response(context)

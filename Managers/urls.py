@@ -7,6 +7,8 @@ urlpatterns = [
     path('mguser', UserAdminTableView.as_view(), name='mguser'),
     path('mgdriver', DriverAdminTableView.as_view(), name='mgdriver'),
 
+    path('statistic', StatisticsTableView.as_view(), name='statistic'),
+
     path('editUser/<int:pk>', editUser.as_view(), name='editUser'),
     path('editDriver/<int:driver_id>', editDriver.as_view(), name='editDriver'),
     path('registerDriver', registerDriver.as_view(), name='registerDriver'),

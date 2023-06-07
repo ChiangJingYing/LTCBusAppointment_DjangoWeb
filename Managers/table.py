@@ -34,3 +34,11 @@ class DriverTable(tables.Table):
         return format_html(
             f'<a class="btn btn-sm badge badge-pill badge-warning" href={reverse("editDriver", args=[str(record.pk)])}>編輯</a>'
         )
+
+class StaticTable(tables.Table):
+    appointment_times = Column(empty_values=(), orderable=True, verbose_name='預約次數')
+    avg_money = Column(empty_values=(), orderable=True, verbose_name='平均金額')
+    class Meta:
+        model = User
+        attrs = {"class": "table table-striped table-sm text-nowrap"}
+        fields = ['name', ]
