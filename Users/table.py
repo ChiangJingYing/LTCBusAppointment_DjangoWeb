@@ -10,3 +10,4 @@ class Appointment(tables.Table):
         model = Appointment
         attrs = {"class": "table table-striped table-sm text-nowrap"}
         exclude = ('appointment_id',)
+        order_by = 'date'
