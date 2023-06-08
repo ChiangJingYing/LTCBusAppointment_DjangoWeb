@@ -1,5 +1,5 @@
 from django import forms
-from .models import User
+from .models import User, Appointment
 
 
 class UserRegisterForm(forms.ModelForm):
@@ -46,3 +46,8 @@ class UserEditForm(forms.ModelForm):
         model = User
         exclude = ['auxiliary_tool', 'username']
         # fields = '__all__'
+
+class AppointmentCreateForm(forms.ModelForm):
+    class Meta:
+        model = Appointment
+        fields = '__all__'

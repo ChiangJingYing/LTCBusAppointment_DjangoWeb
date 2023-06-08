@@ -109,20 +109,22 @@ class Appointment(models.Model):
     date = models.DateField(db_column='Date')  # Field name made lowercase.
     escorts = models.IntegerField(db_column='Escorts')  # Field name made lowercase.
     destination = models.CharField(db_column='Destination', max_length=50, db_collation='utf8mb3_general_ci')  # Field name made lowercase.
-    status = models.CharField(db_column='Status', max_length=20, db_collation='utf8mb3_general_ci')  # Field name made lowercase.
+    status = models.CharField(db_column='Status', max_length=20, db_collation='utf8mb3_general_ci', null=True)  # Field name made lowercase.
     schedules = models.ForeignKey('Schedule', models.DO_NOTHING, db_column='Schedules_ID', blank=True, null=True)  # Field name made lowercase.
     remarks = models.CharField(db_column='Remarks', max_length=50, db_collation='utf8mb3_general_ci', blank=True, null=True)  # Field name made lowercase.
-    manager = models.ForeignKey('Managers', models.DO_NOTHING, db_column='Manager_ID')  # Field name made lowercase.
+    manager = models.ForeignKey('Managers', models.DO_NOTHING, db_column='Manager_ID', blank=True, null=True)  # Field name made lowercase.
     should_pay = models.IntegerField(
         db_column='Should_Pay',
         max_length=99999,
-        null=True
+        null=True,
+        blank=True
     )
     mileage = models.DecimalField(
         db_column='Mileage',
         decimal_places=2,
         max_digits=2,
-        null=True
+        null=True,
+        blank=True
     )
     class Meta:
         managed = False

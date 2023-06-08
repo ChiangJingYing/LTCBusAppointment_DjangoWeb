@@ -7,4 +7,5 @@ urlpatterns = [
     path('edit', EditInfo.as_view(), name='edit'),
 
     path('appointment_all', AppointmentTableView.as_view(), name='appointmentTable'),
+    path('appointment_create', AppointmentCreateView.as_view(), name='appointmentCreate')
 ]

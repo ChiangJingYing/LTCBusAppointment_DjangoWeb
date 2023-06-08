@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import View
 from django_tables2 import SingleTableView
 
-from .form import UserRegisterForm, UserEditForm
+from .form import UserRegisterForm, UserEditForm, AppointmentCreateForm
 from .models import User, Appointment
 from .table import Appointment as AppointmentTable
 
@@ -100,3 +100,25 @@ class AppointmentTableView(SingleTableView):
             return self.render_to_response(context)
         else:
             return redirect('/user')
+
+
+class AppointmentCreateView(View):
+    def get(self, request):
+        if 'user' in request.session:
+            show_field = ['Type', 'Date', 'Escorts', 'Destination']
+            data = {
+                'appointment_user': User.objects.filter(username=request.session['user'])[0],
+                'status': '待排班'
+            }
+            form = AppointmentCreateForm(initial=data)
+            return render(request, 'User/Appointment_create.html', locals())
+        else:
+            return redirect('user')
+
+    def post(self, request):
+        form = AppointmentCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
+        else:
+            return render(request, 'User/Appointment_create.html', locals())
+        return redirect('/user/appointment_all')
