@@ -26,6 +26,7 @@ class UserTable(tables.Table):
 class DriverTable(tables.Table):
     actions = Column(empty_values=(), verbose_name='操作', orderable=False, exclude_from_export=True)
     manger = Column(accessor='manger.manager_id', verbose_name="Manager ID")
+
     class Meta:
         model = Driver
         attrs = {"class": "table table-striped table-sm text-nowrap"}
@@ -35,10 +36,30 @@ class DriverTable(tables.Table):
             f'<a class="btn btn-sm badge badge-pill badge-warning" href={reverse("editDriver", args=[str(record.pk)])}>編輯</a>'
         )
 
+
 class StaticTable(tables.Table):
     appointment_times = Column(empty_values=(), orderable=True, verbose_name='預約次數')
     avg_money = Column(empty_values=(), orderable=True, verbose_name='平均金額')
+
     class Meta:
         model = User
         attrs = {"class": "table table-striped table-sm text-nowrap"}
         fields = ['name', ]
+
+
+class AppointmentTable(tables.Table):
+    actions = Column(empty_values=(), verbose_name='操作', orderable=False, exclude_from_export=True)
+
+    appointment_user = Column(accessor='appointment_user.username', verbose_name='預約帳號')
+    manager = Column(accessor='manager.manager_id', verbose_name='客服ID')
+
+    def render_actions(self, value, record):
+        return format_html(
+            f'<a class="btn btn-sm badge badge-pill badge-warning" href={reverse("editAppointment", args=[str(record.pk)])}>編輯</a>'
+        )
+
+    class Meta:
+        model = Appointment
+        attrs = {"class": "table table-striped table-sm text-nowrap"}
+        exclude = ('appointment_id',)
+        order_by = 'date'

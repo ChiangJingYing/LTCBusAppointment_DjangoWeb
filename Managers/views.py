@@ -4,7 +4,7 @@ from django.views.generic import View
 from django_tables2 import SingleTableView
 
 from .table import *
-from .form import DriverEditForm, DriverRegisterForm
+from .form import DriverEditForm, DriverRegisterForm, AppointmentEditForm
 
 
 # Create your views here.
@@ -133,6 +133,7 @@ class HomePage(View):
         else:
             return redirect('/manager')
 
+
 class StatisticsTableView(SingleTableView):
     table_class = StaticTable
     template_name = 'Manager/statistics_table.html'
@@ -152,3 +153,44 @@ class StatisticsTableView(SingleTableView):
             addition_data = {'logined': True}
             context = self.get_context_data(**addition_data)
             return self.render_to_response(context)
+
+
+class AppointmentTableView(SingleTableView):
+    table_class = AppointmentTable
+    template_name = 'Manager/appointment_table.html'
+
+    def get_queryset(self, **kwargs):
+        form = Appointment.objects.raw(
+            'Select * from Appointment')
+        return form
+
+    def get(self, request, *args, **kwargs):
+        if 'manager' in request.session:
+            tmp = {'logined': True}
+
+            self.object_list = self.get_queryset()
+            context = self.get_context_data(**tmp)
+            return self.render_to_response(context)
+        else:
+            return redirect('/manager')
+
+
+class EditAppointmentView(View):
+    def get(self, request, appointment_id):
+        if 'manager' in request.session:
+            info = Appointment.objects.raw('Select * From Appointment Where Appointment_ID = %s', [appointment_id])
+            form = AppointmentEditForm(instance=info[0])
+            form.fields['schedules'].queryset = Schedule.objects.filter(date=info[0].date)
+            return render(request, 'Manager/edit_appointment.html', locals())
+        else:
+            return redirect('manager')
+
+    def post(self, request, appointment_id):
+        form = AppointmentEditForm(request.POST)
+        if form.is_valid():
+            info = Appointment.objects.raw('Select * From Appointment Where Appointment_ID = %s', [appointment_id])
+            form = AppointmentEditForm(request.POST, instance=info[0])
+            form.save()
+        else:
+            return render(request, 'Manager/edit_appointment.html', locals())
+        return redirect('/manager/mgappointment')

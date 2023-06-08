@@ -1,5 +1,5 @@
 from django import forms
-from .models import Driver
+from .models import Driver, Appointment, Schedule
 
 
 class DriverEditForm(forms.ModelForm):
@@ -29,4 +29,10 @@ class DriverRegisterForm(forms.ModelForm):
 
     class Meta:
         model = Driver
+        fields = '__all__'
+
+
+class AppointmentEditForm(forms.ModelForm):
+    class Meta:
+        model = Appointment
         fields = '__all__'
