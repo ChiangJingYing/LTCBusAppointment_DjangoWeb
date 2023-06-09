@@ -213,7 +213,7 @@ class Appointment(models.Model):
     mileage = models.DecimalField(
         db_column='Mileage',
         decimal_places=2,
-        max_digits=2,
+        max_digits=3,
         null=True,
         blank=True
     )

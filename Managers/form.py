@@ -33,6 +33,29 @@ class DriverRegisterForm(forms.ModelForm):
 
 
 class AppointmentEditForm(forms.ModelForm):
+
+    def clean_escorts(self):
+        data = self.cleaned_data.get('escorts')
+        if data and data < 0:
+            raise forms.ValidationError('陪同人數不可小於0')
+        if not data:
+            return 0
+        return data
+
+    def clean_mileage(self):
+        data = self.cleaned_data.get('mileage')
+        if data and data < 0:
+            raise forms.ValidationError('搭乘里程不可小於0')
+        if not data:
+            return 0
+        return data
+
+    def clean_should_pay(self):
+        data = self.cleaned_data.get('should_pay')
+        if data and data < 0:
+            raise forms.ValidationError('應付金額不可小於0')
+        return data
+
     class Meta:
         model = Appointment
         fields = '__all__'

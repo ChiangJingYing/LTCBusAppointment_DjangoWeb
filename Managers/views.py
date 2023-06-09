@@ -140,7 +140,8 @@ class StatisticsTableView(SingleTableView):
 
     def get_queryset(self, **kwargs):
         return User.objects.raw(
-            'SELECT User_ID, User.Username, COUNT(Appointment.Appointment_ID) AS appointment_times\
+            'SELECT User_ID, User.Username, COUNT(Appointment.Appointment_ID) AS appointment_times,\
+             AVG(Appointment.Should_Pay) as avg_money\
              FROM User LEFT JOIN Appointment ON User.User_ID = Appointment.Appointment_User\
              GROUP BY User.User_ID, User.username;'
         )
@@ -181,6 +182,7 @@ class EditAppointmentView(View):
             info = Appointment.objects.raw('Select * From Appointment Where Appointment_ID = %s', [appointment_id])
             form = AppointmentEditForm(instance=info[0])
             form.fields['schedules'].queryset = Schedule.objects.filter(date=info[0].date)
+            form.initial['manager'] = Managers.objects.filter(manager_id=request.session['manager'])[0]
             return render(request, 'Manager/edit_appointment.html', locals())
         else:
             return redirect('manager')
