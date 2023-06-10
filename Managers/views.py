@@ -23,7 +23,7 @@ class Index(View):
             try:
                 user = Managers.objects.get(manager_id=username)
                 if user.password == password:
-                    print('mgr')
+                    pass
                 else:
                     error_message = '帳號密碼錯誤'
                     return render(request, 'Manager/index.html', locals())

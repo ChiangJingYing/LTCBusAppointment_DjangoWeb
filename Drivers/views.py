@@ -86,11 +86,9 @@ class ReportForm(View):
 
     def post(self, request, schedule_id):
         form = ReForm(request.POST)
-        print(len(request.POST))
         if not form.is_valid():
             return render(request, f'Driver/report_form.html', locals())
         info = Report.objects.raw("Select * from Report Where Schedule = %s", [form.cleaned_data.get('schedule').id])
-        print(form.cleaned_data.get('schedule').id)
         if info:
             form = ReForm(request.POST, instance=info[0])
         form.save()
