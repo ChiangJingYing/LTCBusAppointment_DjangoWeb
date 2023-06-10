@@ -4,7 +4,7 @@ from django.views.generic import View
 from django_tables2 import SingleTableView
 
 from .table import *
-from .form import DriverEditForm, DriverRegisterForm, AppointmentEditForm
+from .form import DriverEditForm, DriverRegisterForm, AppointmentEditForm, ScheduleCreateForm
 
 
 # Create your views here.
@@ -196,3 +196,19 @@ class EditAppointmentView(View):
         else:
             return render(request, 'Manager/edit_appointment.html', locals())
         return redirect('/manager/mgappointment')
+
+
+class ScheduleCreateView(View):
+    def get(self, request):
+        if 'manager' in request.session:
+            form = ScheduleCreateForm()
+            form.initial['manager'] = Managers.objects.filter(manager_id=request.session['manager'])[0]
+            return render(request, 'Manager/create_schedule.html', locals())
+
+    def post(self, request):
+        form = ScheduleCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/manager/mgappointment')
+        else:
+            return redirect('/manager/mgappointment')

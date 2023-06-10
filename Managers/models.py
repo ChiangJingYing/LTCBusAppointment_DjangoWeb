@@ -185,7 +185,7 @@ class Schedule(models.Model):
     start_mileage = models.DecimalField(db_column='Start_Mileage', max_digits=10, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
     end_mileage = models.DecimalField(db_column='End_Mileage', max_digits=10, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
     should_charge = models.DecimalField(db_column='Should_Charge', max_digits=10, decimal_places=0)  # Field name made lowercase.
-    car_check_list = models.ForeignKey(CheckList, models.DO_NOTHING, db_column='Car_Check_List')  # Field name made lowercase.
+    car_check_list = models.ForeignKey(CheckList, models.DO_NOTHING, db_column='Car_Check_List', null=True, blank=True)  # Field name made lowercase.
     manager = models.ForeignKey(Managers, models.DO_NOTHING, db_column='Manager')  # Field name made lowercase.
 
     class Meta:

@@ -1,5 +1,6 @@
 from django import forms
-from .models import Driver, Appointment, Schedule
+from .CusFields import *
+from .models import Driver, Appointment, Schedule, Vehicle, User
 
 
 class DriverEditForm(forms.ModelForm):
@@ -33,7 +34,12 @@ class DriverRegisterForm(forms.ModelForm):
 
 
 class AppointmentEditForm(forms.ModelForm):
-
+    appointment_user = ChoiseFieldShowName(
+        queryset=User.objects.all()
+    )
+    schedules = ChoiseFieldShowIDandDriverName(
+        queryset=Schedule.objects.all()
+    )
     def clean_escorts(self):
         data = self.cleaned_data.get('escorts')
         if data and data < 0:
@@ -58,4 +64,16 @@ class AppointmentEditForm(forms.ModelForm):
 
     class Meta:
         model = Appointment
+        fields = '__all__'
+
+
+class ScheduleCreateForm(forms.ModelForm):
+    vehicle = ChoiseFieldShowCarNumber(
+        queryset=Vehicle.objects.all(),
+    )
+    driver = ChoiseFieldShowName(
+        queryset=Driver.objects.all(),
+    )
+    class Meta:
+        model = Schedule
         fields = '__all__'

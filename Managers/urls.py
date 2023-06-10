@@ -14,4 +14,5 @@ urlpatterns = [
     path('editDriver/<int:driver_id>', editDriver.as_view(), name='editDriver'),
     path('editAppointment/<int:appointment_id>', EditAppointmentView.as_view(), name='editAppointment'),
     path('registerDriver', registerDriver.as_view(), name='registerDriver'),
+    path('createSchedule', ScheduleCreateView.as_view(), name='createSchedule')
 ]
